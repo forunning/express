@@ -6,67 +6,67 @@ let router = express.Router()
 
 let student = require('./student')
 
-router.get('/', function (req, res) {
-    student.find(function (err, students) {
+
+//获取所有数据行
+router.post('/findall',(req, res) =>{
+    student.find((err, students) =>{
         if (err) {
-            return res.status(500).send('Serve Error')
-        }
-        res.json(students)
-    })
-})
-router.get('/students', function (req, res) {
-    student.find(function (err, students) {
-        if (err) {
-            return res.status(500).send('Serve Error')
-        }
-    })
-
-})
-
-
-router.post('/students/new', function (req, res) {
-    //获取表单数据----req.body
-    new student(req.body).save(function (err, ret) {
-        if (err) {
-            return res.status(500).send('Serve Error')
-        }
-        res.json(req.body)
-    })
-
-})
-
-router.get('/students/edit', function (req, res) {
-    student.findById(req.query.id.replace(/"/g, ''), function (err, student) {
-        if (err) {
-            return res.status(500).send('Serve Error')
-        }
-        res.render('edit.html', {
-            student: student
-        })
-
-    })
-
-})
-
-router.post('/students/edit', function (req, res) {
-    let id = req.body.id.replace(/"/g, '')
-    student.findByIdAndUpdate(id, req.body, function (err) {
-        if (err) {
-            return res.status(500).send('Serve Error')
+            res.json({status:500,message:'查询错误'})
+        } else {
+            res.json({status:200,message:'查询成功',data:students})
         }
     })
 })
 
-router.get('/students/delete', function (req, res) {
-    let id = req.query.id.replace(/"/g, '')
-    student.findByIdAndRemove(id, function (err) {
+//获取所有数据行
+router.post('/findone', (req, res) =>{
+    let name = req.body.username
+    student.findOne({username:name},(err,stu) =>{
         if (err) {
-            return res.status(500).send('Serve Error')
+            res.json({status:500,message:'查询失败！'})
+        } else {
+            res.json({status:200,message:'查询成功',data:stu})
         }
     })
-
 })
 
+//添加数据行
+router.post('/add', function (req, res) {
+    // 获取表单数据----req.body
+    req.body.labels = eval(req.body.labels);
+    new student(req.body).save((err, ret) => {
+        if (err) {
+            res.json({status:500,message:'用户添加失败,请更换用户名重试！'})
+        } else {
+            res.json({status:200,message:'用户添加成功',data:req.body})
+        }
+    })
+})
+
+//删除数据行
+router.post('/delete', (req, res) => {
+    let name = req.body.username
+    student.deleteOne({ username: name }, (err, doc) => {
+        if (err) {
+            res.json({status:500,message:'用户删除失败！'})
+        } else {
+            res.json({status:200,message:'用户删除成功',data:req.body})
+        }
+    })
+})
+
+
+//修改数据行
+router.post('/update', function (req, res) {
+    let name = req.body.username
+    student.updateOne({username:name}, req.body, function (err) {
+        if (err) {
+            res.json({status:500,message:'更新操作失败！'})
+        }else{
+            res.json({status:200,message:'更新成功',data:req.body})
+        }
+    })
+})
 
 module.exports = router
 

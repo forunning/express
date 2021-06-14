@@ -1,26 +1,43 @@
 let mongoose = require('mongoose')
 let Schema = mongoose.Schema
-
-mongoose.connect('mongodb+srv://wufangjian:wufangjian@cluster0.0fjry.mongodb.net/index?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.set('useCreateIndex', true);
+mongoose.connect('mongodb+srv://wufangjian:wufangjian@cluster0.0fjry.mongodb.net/index?retryWrites=true&w=majority', { useNewUrlParser: true })
+.then(
+    ()=>{console.log('database connect success!')},
+    (err)=>{console.log('database connect fail!')}
+)
 
 let commentSchema = new Schema({
-    name: {
+    username: {
+        type: String,
+        require: true,
+        unique:true
+    },
+    password: {
         type: String,
         require: true
     },
-    gender: {
+    background: {
         type: Number,
-        enum: [0, 1],
-        default: 0
+        default: 1
     },
-    hobbies: {
-        type: String,
-    },
-    fruits: {
-        type: String,
-    }
+    labels: [
+    ]
 }, { versionKey: false })
 
+
+//数据样本
+// var user={
+//     username:'wufangjian',
+//     password:'root',
+//     background:1,
+//     labels:[
+//         {
+//             name:'百度',
+//             http:'www.baidu.com'
+//         }
+//     ]
+// }
 
 
 module.exports = mongoose.model('User', commentSchema, 'user')
