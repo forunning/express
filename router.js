@@ -7,6 +7,7 @@ let router = express.Router()
 let student = require('./student')
 
 
+
 //获取所有数据行
 router.post('/findall',(req, res) =>{
     student.find((err, students) =>{
@@ -59,6 +60,7 @@ router.post('/delete', (req, res) => {
 //修改数据行
 router.post('/update', function (req, res) {
     let name = req.body.username
+    req.body.labels = eval(req.body.labels);
     student.updateOne({username:name}, req.body, function (err) {
         if (err) {
             res.json({status:500,message:'更新操作失败！'})
