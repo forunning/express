@@ -43,6 +43,6 @@ app.use(express.json())
 //把路由容器挂载到app服务中
 app.use(router)
 
-server=app.listen(8088,function () {
+server=app.listen(process.env.PORT || 5000,function () {
     console.log('app is listening to port:'+server.address().port)
 });
