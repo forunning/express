@@ -6,6 +6,10 @@ let router = express.Router()
 
 let student = require('./student')
 
+//获取所有数据行
+router.get('/',(req, res) =>{
+    return res.send("Hello opeNode!");
+})
 
 
 //获取所有数据行
